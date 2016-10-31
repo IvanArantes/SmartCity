@@ -53,8 +53,8 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
 				result = JSON.stringify( mensajeSSAP.body.data[ i ], undefined, 2 );
                 $scope.resultados.push(JSON.parse(result));
-                $scope.markers.push($scope.resultados[i].SensoresArduino.geometry.coordinates);
-                //console.log($scope.resultados[i].SensoresArduino.geometry.coordinates[0]);
+                $scope.markers.push($scope.resultados[i].SensoresArduino);
+                console.log($scope.resultados[i].SensoresArduino);
 			}
             $scope.setMarkers();
 		}
@@ -103,7 +103,7 @@ $scope.action = function() {
 }
 
 $scope.setMarkers = function () {
- var icon = "img/lampada.png";
+ var icon = "img/icosensor.png";
  var map;   
  var marker;
  var mapOptions = {
@@ -116,17 +116,18 @@ $scope.setMarkers = function () {
 
  for(var i = 0; i < $scope.markers.length; i++) {
 
- 	var lat = $scope.markers[i][0];
- 	var lng = $scope.markers[i][1];
- 	var latlngset = new google.maps.LatLng($scope.markers[i][0], $scope.markers[i][1]), 
+ 	var lat = $scope.markers[i].geometry.coordinates[0];
+ 	var lng = $scope.markers[i].geometry.coordinates[1];
+ 	var latlngset = new google.maps.LatLng(lat,lng), 
 	marker = new google.maps.Marker({
     position: latlngset,
     map: map,
-	title: $scope.markers[i],
+	title: $scope.markers[i].sensor,
 	icon: icon
-
   });
-  	var content = '<p>Marker Location:' + marker.getPosition() + '</p>'
+  	var content = '<p>Nome do Sensor: ' + $scope.markers[i].sensor  + '</p>' +  
+	  '<p>Latitude: '+ lat + '</p>' +
+	  '<p>Longitude: '+ lng + '</p>';
 
 	google.maps.event.addListener(marker, 'click', (function(marker, content) {
             return function() {
