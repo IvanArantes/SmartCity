@@ -27,7 +27,7 @@ $scope.sessionKey;
 	}
 }
 $scope.connect = function( ontology, kp, token, retrollamadaIfOk ) {
-		sofia2.joinToken( token, kp, function( mensajeSSAP ) {			
+		sofia2.joinToken( token, kp, function( mensajeSSAP ) {		
 			if ( mensajeSSAP != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
 				$scope.sessionKey = mensajeSSAP.sessionKey;
 				
@@ -43,9 +43,6 @@ $scope.connect = function( ontology, kp, token, retrollamadaIfOk ) {
 		} );
 	}
 	
-
-
-
 
 $scope.queryResultCall = function( mensajeSSAP ) {
 	if ( mensajeSSAP != null ) {
@@ -72,9 +69,8 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 
 // Funciones SIB sofia2
 $scope.sendCustomMessage = function( ontologia, query, retrollamada ) {
-//	$scope.sessionKey = null;
 	if ( connection != null ) {
-		console.log($scope.getSessionKey());
+		 console.log($scope.getSessionKey());
 		 $scope.sessionKey = $scope.getSessionKey();
 		if ( $scope.sessionKey != null ) {
 			sofia2.queryWithQueryType( query.replace(/[\n\r]+/g, '').replace(/\s{2,10}/g, ''), ontologia, "SQLLIKE", null, retrollamada );
@@ -84,24 +80,14 @@ $scope.sendCustomMessage = function( ontologia, query, retrollamada ) {
 		}		 
 	}
 	else {
-		$scope.resultbox = "por favor realiza um join";
+		$scope.resultbox = "por favor realiza um join(connection)";
 	}
 }
 
-
-/*$scope.conectar = function conectarSIBConToken() {
-	console.log("entrou no conectar");
-	$scope.connect("SensoresArduino","Sensor:Sensor1", "26e75ce8b75f4323bfd2657677911e55", function( arg ) {
-		  alert.(arg);
-		}
-	);
-}*/
-
 $scope.conectar = function() {
 		$scope.connect("SensoresArduino", "Sensor:Sensor1",	"26e75ce8b75f4323bfd2657677911e55",	function( session ) {
-			  alert(session);
-			}
-			
+			  console.log(session);
+			}	
 		);
 	}
 
@@ -112,7 +98,7 @@ $scope.desconectar = function() {
 }
 
 $scope.action = function() {
-		$scope.sendCustomMessage( $scope.ontology, "select * from SensoresArduino", $scope.queryResultCall);		
+		$scope.sendCustomMessage("SensoresArduino", "select * from SensoresArduino", $scope.queryResultCall);		
 	console.log("executado action");	
 }
 
@@ -121,16 +107,15 @@ $scope.setMarkers = function () {
  var map;   
  var marker;
  var mapOptions = {
-    zoom: 5,
+    zoom: 15,
 	mapTypeId: google.maps.MapTypeId.ROADMAP,
-    center: {lat: 40.985541, lng: -73.51681}
+    center: {lat: -16.68189, lng: -49.255539}
   };
  map = new google.maps.Map(document.getElementById('map'), mapOptions);
  var infowindow = new google.maps.InfoWindow();
 
  for(var i = 0; i < $scope.markers.length; i++) {
 
-	console.log($scope.markers[i][0]);
  	var lat = $scope.markers[i][0];
  	var lng = $scope.markers[i][1];
  	var latlngset = new google.maps.LatLng($scope.markers[i][0], $scope.markers[i][1]), 
@@ -141,29 +126,23 @@ $scope.setMarkers = function () {
 	icon: icon
 
   });
-  var content = '<p>Marker Location:' + marker.getPosition() + '</p>'
+  	var content = '<p>Marker Location:' + marker.getPosition() + '</p>'
 
-google.maps.event.addListener(marker, 'click', (function(marker, content) {
+	google.maps.event.addListener(marker, 'click', (function(marker, content) {
             return function() {
                 infowindow.setContent(content);
                 infowindow.open(map, marker);
             }
         })(marker, content));
  
- }
- 
- 
+ 	} 
 }
 
 //google.maps.event.addDomListener(window, 'load', initialize);
-    
-$scope.init = function(){
-	console.log("chamou a funcção");
-	$scope.conectarSIBConToken();
-	$scope.action();
-}
 
-//window.setInterval($scope.conectarSIBConToken,5000);
+window.setTimeout($scope.conectar,500);
+window.setTimeout($scope.action,1000);
+
 
 
 });
