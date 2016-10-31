@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<title>Sofia2 Simple Query</title>
+
+<style type="text/css">
+	<!-- estilos css -->
+</style>
+
+<script type="text/javascript" src="http://sofia2.com/js/jquery/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">var pathToDwrServlet = 'http://sofia2.com/sib/dwr';</script>
+<script type='text/javascript' src='http://sofia2.com/sib/dwr/engine.js'></script>
+<script type='text/javascript' src='http://sofia2.com/sib/dwr/util.js'></script>
+<script type='text/javascript' src='http://sofia2.com/sib/dwr/interface/GatewayDWR.js'></script>
+<script type='text/javascript' src="http://sofia2.com/js/sofia2-api-js_v2.9.0.js"></script>
+
+
+<script>
+
+var connection;
+
+$(function() {
+    dwr.engine.setActiveReverseAjax( false );
+    dwr.engine.setTimeout(0);
+		dwr.engine.setErrorHandler( function( arg ){ alert( arg ) } );
+		
+		connection = new Connection();
+} );
+	
+var queryResultCall = function( mensajeSSAP ) {
+	if ( mensajeSSAP != null ) {
+		if (  mensajeSSAP.body != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
+			// console.log( "Mensaje enviado ok " + mensajeSSAP.body );
+			var result = "";
+			
+			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
+				result += JSON.stringify( mensajeSSAP.body.data[ i ], undefined, 2 ) + "\n";
+			}
+			$('#resultbox').val( result );
+		}
+		else {
+		  $('#resultbox').val(mensajeSSAP.body.error);
+		}
+	}
+	else {
+		$('#resultbox').val( "no results" );		
+	}
+}
+
+// Funciones SIB sofia2
+function sendCustomMessage( ontologia, query, retrollamada ) {
+	var sessionKey = null;
+	if ( connection != null ) {
+		 sessionKey = connection.getSessionKey();
+		if ( sessionKey != null ) {
+			sofia2.queryWithQueryType( query.replace(/[\n\r]+/g, '').replace(/\s{2,10}/g, ''), ontologia, "SQLLIKE", null, retrollamada );
+		}
+		else {
+			$('#resultbox').val('por favor realiza un join');
+		}		 
+	}
+	else {
+		$('#resultbox').val('por favor realiza un join');
+	}
+}
+
+// Objeto de conexion a ontologia
+var Connection = function() {
+	var sessionKey = null;
+	
+	this.getSessionKey = function() {
+		return sessionKey;
+	}
+	
+	this.connect = function( ontology, kp, token, retrollamadaIfOk ) {
+		sofia2.joinToken( token, kp, function( mensajeSSAP ) {			
+			if ( mensajeSSAP != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
+				sessionKey = mensajeSSAP.sessionKey;
+				
+				if (typeof( retrollamadaIfOk )==='undefined' ) {
+				}
+				else {
+					retrollamadaIfOk( sessionKey );
+				}
+			}
+			else {
+					alert( "Error\n" +  mensajeSSAP.body.error );
+			}
+		} );
+	}
+	
+	this.leave = function( retrollamadaIfOk ) {
+		sofia2.leave( function( mensajeSSAP ) {			
+			sessionKey = null;
+			if ( mensajeSSAP != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
+			  retrollamadaIfOk();
+			}
+			else {
+				alert( "Error\n" +  mensajeSSAP.body.error );
+			}
+
+		} );
+	}
+}
+	
+function conectarSIBConToken() {
+	connection.connect( 		  
+	  $( '#ontologybox').val(), 
+		$( '#kpbox').val(), 
+		$( '#tokenbox').val(),
+		function( arg ) {
+		  $('#resultbox').val( 'session key ' + arg );
+		}
+	);
+}
+
+function desconectar() {
+	if ( connection != null ) {
+		connection.leave( 		  
+			function( arg ) {
+				$('#resultbox').val( 'desconectado' );
+			}
+		);
+	}
+}
+
+function action() {
+		sendCustomMessage( $( '#ontologybox').val(), $( '#querybox').val(), queryResultCall );			
+}
+		//--------------------------------------------INSERT-------------------------------------------------------------
+				var sessionKey;
+		function enviar(campo01, campo02, campo03){  
+			var ontologyInstance='"TesteConexao":{ "Campo01": "'+campo01+'", "Campo02": 0, "Campo03": "'+campo03+'"}';
+			sofia2.insert(ontologyInstance, 'TesteConexao', function(mensajeSSAP){}, sessionKey);
+		}
+		//--------------------------------------------FIM-INSERT----------------------------------------------------------
+</script>
+</head>
+
+<body style="background-color:#FFFFFF">
+	<div>
+		<p>Instancia KP</p><p><textarea id="kpbox" rows="1" cols="100">testeconctar:testeconctar1</textarea></p>	
+		<p>Ontologia</p><p><textarea id="ontologybox" rows="1" cols="100">TesteConexao</textarea></p>	
+		<p>Token</p><p><textarea id="tokenbox" rows="1" cols="100">557d7f380c7242948016390375f0e207</textarea></p>
+		<p><button cols="100" onclick="conectarSIBConToken();">Join</button><button cols="100" onclick="desconectar();">Leave</button></p>
+	  <p><textarea id="querybox" rows="10" cols="100">select * from TesteConexao</textarea></p>
+					<b>Campo01:</b>           
+					<input type="text" id="valor" size="36" value="3" style="margin:4px"/>
+					<b>Campo01:</b> 
+					<input type="text" id="valor2" size="36" value="0" style="margin:4px"/>
+					<b>Campo03:</b> 
+					<input type="text" id="valor3" size="36" value="3" style="margin:4px"/>
+					<p><input type="button" value="Enviar" style="margin:4px" onclick='enviar($("#valor").val(), $("#valor2").val(), $("#valor3").val());'/>
+					<button cols="100" onclick="action();">Query!</button>
+					<button cols="100" onclick="$( '#resultbox' ).val( '' );">Clear</button></p>
+	</div>
+	<div>
+		<p><textarea id="resultbox" rows="100" cols="100"></textarea></p>
+	</div>
+</body>
