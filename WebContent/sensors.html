@@ -43,26 +43,18 @@
 			</div>
 		</nav>
 	</header>
-	<div class="container-fluid">
+		<div class="container-fluid">
 		<h3>Smart City - Indra</h3>
 		<div class="row-fluid">
 			<div class="col-md-2">
-				<h4>Lâmpada</h4>
-				<form>
-					<p>Identificação:</p><input id="id" type="text">
-					<p>Latitude:</p><input id="lat" type="text">
-					<p>Longitude:</p><input id="lon" type="text">
-					<p>Potência:</p><input id="pot" type="text">
-
-				</form>
-					<input type="button" ng-click="conectar()" value="Conectar">
-					<input type="button" ng-click="action()" value="Query">
+				<h4>Sensores</h4>
+					<p>Localidade</p><input ng-model="address" type="textbox" value="Goiania">
+                    <br><button id="btBusca" ng-click="geocodeAddress(address)" class="btn btn-primary">Buscar </button>
 			</div>
            <div id="map" class="col-md-10" ></div>	
 		</div>
        
 		</div>
-
 </body>
 
 </html>

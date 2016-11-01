@@ -116,7 +116,25 @@ $scope.action = function() {
     center: {lat: -16.673624 , lng: -49.269078}
   };
  $scope.map = new google.maps.Map(document.getElementById('map'), $scope.mapOptions);
-
+    
+$scope.geocoder = new google.maps.Geocoder();
+  
+$scope.geocodeAddress = function(address) {
+  $scope.address = address;
+  $scope.geocoder.geocode({'address': address}, function(results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      $scope.map.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+        map: $scope.map,
+        position: $scope.results[0].geometry.location
+      });
+    } else {
+      alert('Geocode was not successful for the following reason: ' + $scope.status);
+    }
+  });
+}
+   
+    
 $scope.setMarkers = function () {
 
  var infowindow = new google.maps.InfoWindow();
