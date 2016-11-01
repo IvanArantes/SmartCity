@@ -2,15 +2,15 @@ var app =  angular.module("SmartCityApp",[]);
 app.controller("mapacontroller", function($scope){
 
 
-$scope.kp = "Lampada:Lampada1";
-$scope.ontology = "LampadaArduino";
-$scope.token = "003e214ae29e49c6a6912c7660f0e742";
+$scope.kp = "Led:Led1";
+$scope.ontology = "LedArduino";
+$scope.token = "963332f6a53f41e5b639a14e653eb694";
 $scope.resultados = Array();
 $scope.markers = [];
 $scope.sessionKey = null;
 $scope.connection;
 
-$scope.queryLamp = "select * from LampadaArduino";
+$scope.queryLamp = "select * from LedArduino";
 
 $( function() {
     dwr.engine.setActiveReverseAjax( false );
@@ -53,12 +53,14 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 			
 			
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
+				console.log("entrou na funcção de insersão");
 				result = JSON.stringify( mensajeSSAP.body.data[ i ], undefined, 2 );
                 $scope.resultados.push(JSON.parse(result));
-                $scope.markers.push($scope.resultados[i].LampadaArduino);
-                console.log($scope.resultados[i].LampadaArduino);
+                $scope.markers.push($scope.resultados[i].LedArduino);
+                console.log($scope.resultados[i].LedArduino);
+				console.log("Tamanho do Markers: " + $scope.markers.length);
 			}
-           // $scope.setMarkers();
+            $scope.setMarkers();
 		}
 		else {
 		  $scope.resultbox = mensajeSSAP.body.error;
@@ -101,50 +103,61 @@ $scope.desconectar = function() {
 }
 
 $scope.action = function() {
-		$scope.sendCustomMessage($scope.ontology, $scope.querySens, $scope.queryResultCall);		
+		$scope.sendCustomMessage($scope.ontology, $scope.queryLamp, $scope.queryResultCall);		
 	console.log("executado action");	
 }
 
-$scope.setMarkers = function () {
- var icon = "img/icosensor.png";
- var map;   
- var marker;
- var mapOptions = {
+
+ $scope.map;   
+ $scope.marker;
+ $scope.mapOptions = {
     zoom: 15,
 	mapTypeId: google.maps.MapTypeId.ROADMAP,
-    center: {lat: -16.68189, lng: -49.255539}
+    center: {lat: -16.673624 , lng: -49.269078}
   };
- map = new google.maps.Map(document.getElementById('map'), mapOptions);
+ $scope.map = new google.maps.Map(document.getElementById('map'), $scope.mapOptions);
+
+$scope.setMarkers = function () {
+
  var infowindow = new google.maps.InfoWindow();
 
- for(var i = 0; i < $scope.markers.length; i++) {
-
+ 	for(var i = 0; i < $scope.markers.length; i++) {
+		var icon = "img/lampadablue.png";
+		if($scope.markers[i].carga <= 50) {
+			var icon = "img/lampada.png";
+		}
  	var lat = $scope.markers[i].geometry.coordinates[0];
  	var lng = $scope.markers[i].geometry.coordinates[1];
- 	var latlngset = new google.maps.LatLng(lat,lng), 
-	marker = new google.maps.Marker({
+ 	var latlngset = new google.maps.LatLng(lat,lng);
+	$scope.marker = new google.maps.Marker({
     position: latlngset,
-    map: map,
-	title: $scope.markers[i].sensor,
+    map: $scope.map,
+	title: $scope.markers[i].led,
 	icon: icon
   });
-  	var content = '<p>Nome do Sensor: ' + $scope.markers[i].sensor  + '</p>' +  
+  	var content = '<p>Nome do Sensor: ' + $scope.markers[i].led  + '</p>' +  
 	  '<p>Latitude: '+ lat + '</p>' +
 	  '<p>Longitude: '+ lng + '</p>' +
-	  '<p>Data da modificação: ' + $scope.markers[i].data_disparo.$date.substring(0,10) + '</p>';
+	  '<p>Data da modificação: ' + $scope.markers[i].data_carga.$date.substring(0,10) + ' ' + $scope.markers[i].data_carga.$date.substring(11,19) + '</p>' + 
+	  '<p>Potência: ' + $scope.markers[i].carga + '</p>';
 
-	google.maps.event.addListener(marker, 'click', (function(marker, content) {
+
+	google.maps.event.addListener($scope.marker, 'click', (function(marker, content) {
             return function() {
                 infowindow.setContent(content);
-                infowindow.open(map, marker);
+                infowindow.open($scope.map, marker);
             }
-        })(marker, content));
+        })($scope.marker, content));
  
- 	} 
+	 }	
+	 $scope.resultados = [];
+	  $scope.markers = [];
 }
 
 window.setTimeout($scope.conectar(),500);
 window.setTimeout($scope.action,1000);
+window.setInterval($scope.conectar(),1500);
+window.setInterval($scope.action,2000);
 
 
 
