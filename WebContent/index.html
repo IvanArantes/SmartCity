@@ -35,49 +35,31 @@
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-						<li><a href="#">Link</a></li>
+						<li class="active"><a href="#">Smart Light <span class="sr-only">(current)</span></a></li>
+						
 					</ul>
 				</div>
 			</div>
 		</nav>
 	</header>
 	<div class="container-fluid">
-
 		<h3>Smart City - Indra</h3>
-		<div class="row">
-			<div class="col-md-4">
+		<div class="row-fluid">
+			<div class="col-md-2">
 				<h4>Lâmpada</h4>
 				<form>
 					<p>Identificação:</p><input id="id" type="text">
 					<p>Latitude:</p><input id="lat" type="text">
 					<p>Longitude:</p><input id="lon" type="text">
 					<p>Potência:</p><input id="pot" type="text">
-					<input type="button" ng-click="setMarkers()" value="Marcar"> 
+
 				</form>
 					<input type="button" ng-click="conectar()" value="Conectar">
 					<input type="button" ng-click="action()" value="Query">
 			</div>
-			<div id="map" class="col-md-8" ></div>
+           <div id="map" class="col-md-10" ></div>	
 		</div>
-			<div class="row">
-				<div class="col-md-12">
-					<p>{{resultbox}}</p>
-					<table>
-					<tr ng-repeat="resultado in resultados">
-						<td>
-								{{resultado.SensoresArduino.sensor}}	
-						</td>
-						<td>
-								{{resultado.SensoresArduino.geometry.coordinates[0]}}	
-						</td>
-						<td>
-								{{resultado.SensoresArduino.geometry.coordinates[1]}}	
-						</td>
-					</tr>
-					</table>	
-				</div>
-			</div>
+       
 		</div>
 
 </body>
