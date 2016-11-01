@@ -105,26 +105,45 @@ $scope.action = function() {
 	console.log("executado action");	
 }
 
-$scope.setMarkers = function () {
- var icon = "img/icosensor.png";
- var map;   
- var marker;
- var mapOptions = {
+$scope.map;   
+$scope.marker;
+$scope.mapOptions = {
     zoom: 15,
 	mapTypeId: google.maps.MapTypeId.ROADMAP,
     center: {lat: -16.68189, lng: -49.255539}
   };
- map = new google.maps.Map(document.getElementById('map'), mapOptions);
+ $scope.map = new google.maps.Map(document.getElementById('map'), $scope.mapOptions);
+
+$scope.geocoder = new google.maps.Geocoder();
+  
+$scope.geocodeAddress = function(address) {
+  $scope.address = address;
+  $scope.geocoder.geocode({'address': address}, function(results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      $scope.map.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+        map: $scope.map,
+        position: $scope.results[0].geometry.location
+      });
+    } else {
+      alert('Não foram encontrados resultados: ' + $scope.status);
+    }
+  });
+}
+
+
+$scope.setMarkers = function () {
+ var icon = "img/icosensor.png";
  var infowindow = new google.maps.InfoWindow();
 
  for(var i = 0; i < $scope.markers.length; i++) {
 
  	var lat = $scope.markers[i].geometry.coordinates[0];
  	var lng = $scope.markers[i].geometry.coordinates[1];
- 	var latlngset = new google.maps.LatLng(lat,lng), 
-	marker = new google.maps.Marker({
+ 	var latlngset = new google.maps.LatLng(lat,lng);
+	$scope.marker = new google.maps.Marker({
     position: latlngset,
-    map: map,
+    map: $scope.map,
 	title: $scope.markers[i].sensor,
 	icon: icon
   });
@@ -133,21 +152,24 @@ $scope.setMarkers = function () {
 	  '<p>Longitude: '+ lng + '</p>' +
 	  '<p>Data da modificação: ' + $scope.markers[i].data_disparo.$date.substring(0,10) + '</p>';
 
-	google.maps.event.addListener(marker, 'click', (function(marker, content) {
+	google.maps.event.addListener($scope.marker, 'click', (function(marker, content) {
             return function() {
                 infowindow.setContent(content);
-                infowindow.open(map, marker);
+                infowindow.open($scope.map, marker);
             }
-        })(marker, content));
+        })($scope.marker, content));
  
  	} 
+	$scope.resultados = [];
+	$scope.markers = [];
 }
 
-//google.maps.event.addDomListener(window, 'load', initialize);
+
 
 window.setTimeout($scope.conectar(),500);
 window.setTimeout($scope.action,1000);
-
+window.setInterval($scope.conectar(),1500);
+window.setInterval($scope.action,2000);
 
 
 });

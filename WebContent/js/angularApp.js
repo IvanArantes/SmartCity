@@ -129,7 +129,7 @@ $scope.geocodeAddress = function(address) {
         position: $scope.results[0].geometry.location
       });
     } else {
-      alert('Geocode was not successful for the following reason: ' + $scope.status);
+      alert('Não foram encontrados resultados: ' + $scope.status);
     }
   });
 }
