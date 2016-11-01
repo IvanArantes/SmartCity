@@ -2,15 +2,15 @@ var app =  angular.module("SmartCityApp",[]);
 app.controller("mapacontroller", function($scope){
 
 
-$scope.kp = "Lampada:Lampada1";
-$scope.ontology = "LampadaArduino";
-$scope.token = "003e214ae29e49c6a6912c7660f0e742";
+$scope.kp = "Sensor:Sensor1";
+$scope.ontology = "SensoresArduino";
+$scope.token = "26e75ce8b75f4323bfd2657677911e55";
 $scope.resultados = Array();
 $scope.markers = [];
 $scope.sessionKey = null;
 $scope.connection;
 
-$scope.queryLamp = "select * from LampadaArduino";
+$scope.querySens = "select * from SensoresArduino";
 
 $( function() {
     dwr.engine.setActiveReverseAjax( false );
@@ -55,10 +55,10 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
 				result = JSON.stringify( mensajeSSAP.body.data[ i ], undefined, 2 );
                 $scope.resultados.push(JSON.parse(result));
-                $scope.markers.push($scope.resultados[i].LampadaArduino);
-                console.log($scope.resultados[i].LampadaArduino);
+                $scope.markers.push($scope.resultados[i].SensoresArduino);
+                //console.log($scope.resultados[i].SensoresArduino);
 			}
-           // $scope.setMarkers();
+            $scope.setMarkers();
 		}
 		else {
 		  $scope.resultbox = mensajeSSAP.body.error;
@@ -101,7 +101,7 @@ $scope.desconectar = function() {
 }
 
 $scope.action = function() {
-		$scope.sendCustomMessage($scope.ontology, $scope.querySens, $scope.queryResultCall);		
+		$scope.sendCustomMessage($scope.ontology, $scope.querySens, $scope.queryResultCall);
 	console.log("executado action");	
 }
 
@@ -142,6 +142,8 @@ $scope.setMarkers = function () {
  
  	} 
 }
+
+//google.maps.event.addDomListener(window, 'load', initialize);
 
 window.setTimeout($scope.conectar(),500);
 window.setTimeout($scope.action,1000);
