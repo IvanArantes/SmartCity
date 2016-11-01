@@ -1,11 +1,11 @@
 #logo {
-	heigth: 60px;
+	height: 60px;
 	width: 120px;
 	margin-top: -15px;
 }
 
 #map {
-	height: 500px;
+	height: 450px;
 	width: 1000px;
 	box-shadow: 0px 0px 10px blue;
 	margin-bottom: 0%;
@@ -30,5 +30,31 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	  position: relative;
+  min-height: 100%;
 }
 
+#btBusca{
+	margin-top: 1%;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 40px;
+  background-color: #000000;
+}
+
+
+.containerFooter {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+.containerFooter .text-muted {
+  margin: 10px 0 10px 0;
+  color: white;
+  font-size: 10px;
+}

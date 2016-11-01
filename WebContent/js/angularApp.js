@@ -126,6 +126,7 @@ $scope.geocodeAddress = function(address) {
       $scope.map.setCenter(results[0].geometry.location);
       var marker = new google.maps.Marker({
         map: $scope.map,
+		animation: google.maps.Animation.DROP,
         position: $scope.results[0].geometry.location
       });
     } else {
