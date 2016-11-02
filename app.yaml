@@ -1,0 +1,32 @@
+application: smartlightjp
+version: 1
+runtime: php55
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /img
+  static_dir: img
+
+- url: /js
+  static_dir: js
+
+- url: /css
+  static_dir: css
+
+- url: /
+  static_files: index.html
+  upload: index.html
+
+- url: /index.html
+  static_files: index.html
+  upload: index.html
+
+- url: /sensors.html
+  static_files: sensors.html
+  upload: sensors.html
+

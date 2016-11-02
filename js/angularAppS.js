@@ -163,7 +163,7 @@ $scope.setMarkers = function () {
  	} 
 	$scope.resultados = [];
 	$scope.markers = [];
-	$scope.desconectar();
+	
 }
 
 
