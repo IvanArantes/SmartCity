@@ -9,8 +9,8 @@ $scope.markers = [];
 $scope.markersBkp = [];
 $scope.sessionKey = null;
 $scope.connection;
-$scope.markerMap = [];
-
+$scope.markersMap = [];
+$scope.marker = [];
 $scope.queryLamp = "select * from LedArduino";
 
 $( function() {
@@ -47,20 +47,23 @@ $scope.connect = function( ontology, kp, token, retrollamadaIfOk ) {
 	}
 	
 $scope.addInArray = function(elemento){
-	console.log("Tamanho do markers: " + $scope.markers.length);
+	
 	var diferente = true;
 	var i = 0;
-	while(i < $scope.markers.length && diferente) {
-		console.log(elemento.led + ' ' + $scope.markers[i].led);
-		if(elemento.led = $scope.markers[i].led){
+    console.log($scope.markers.length);
+	while(i < $scope.markers.length && diferente == true) {
+        
+		if(elemento.led == $scope.markers[i].led){
  			diferente = false;
 		}
-	i++;}
+	i++;
+    }
 		if(diferente){
-			 $scope.markers.push(JSON.parse(result).LedArduino);
+			 $scope.markers.push(elemento);
 		}
 		else{
-			$scope.markers[i] = elemento;
+			$scope.markers[i] = (elemento);
+            console.log("elemento"+elemento.led);
 		}
 }
 
@@ -70,15 +73,19 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 			console.log( "Mensagem Enviada com Sucesso!" + mensajeSSAP.body );
 			
 			var result = null;
+            $scope.markers = [];
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
 				result = JSON.stringify( mensajeSSAP.body.data[ i ], undefined, 2 );
 				if($scope.markers.length == 0){
-					$scope.markers.push(JSON.parse(result).LedArduino);}
+					$scope.markers.push(JSON.parse(result).LedArduino);
+                
+                }
 				else{
 					$scope.addInArray(JSON.parse(result).LedArduino);
-					console.log(JSON.parse(result).LedArduino);
+				    console.log("valor do parse"+JSON.parse(result).LedArduino.led);
 				}
 			}
+            $scope.deleteMarkers();
             $scope.setMarkers();
 		}
 		else {
@@ -156,32 +163,34 @@ $scope.geocodeAddress = function(address) {
   });
 }
 
-$scope.calcularDiferenca = function(){
-	return $scope.markers.length - $scope.markersBkp.length;
+$scope.deleteMarkers = function() {
+        $scope.markersMap = [];
 }
+$scope.clearMarkers = function() {
+        setMapOnAll(null);
+      }
 
 $scope.setMarkers = function () {
 
  var infowindow = new google.maps.InfoWindow();
 
-		var icon = "img/lampadablue.png";
-	
-	if($scope.calcularDiferenca() != 0) {
-		console.log($scope.calcularDiferenca());
-		console.log("Markers: " + $scope.markers.length);
-		console.log("MarkersBKP: " + $scope.markersBkp.length);
-		for(var j = $scope.markers.length - $scope.calcularDiferenca(); j < $scope.markers.length; j++){
+		var icon;
+		for(var j = 0; j < $scope.markers.length; j++){
 			var lat = $scope.markers[j].geometry.coordinates[0];
  			var lng = $scope.markers[j].geometry.coordinates[1];
 			var latlngset = new google.maps.LatLng(lat,lng);
+            if($scope.markers[j].carga<50){
+              icon = "img/lampada.png";  
+            }
+            else{
+           icon = "img/lampadablue.png";}
 			$scope.marker = new google.maps.Marker({
     		position: latlngset,
     		map: $scope.map,
 			title: $scope.markers[j].led,
 			icon: icon
   			});
-		
-	
+            
   	var content = '<p>Nome do Sensor: ' + $scope.markers[j].led  + '</p>' +  
 	  '<p>Latitude: '+ lat + '</p>' +
 	  '<p>Longitude: '+ lng + '</p>' +
@@ -196,13 +205,13 @@ $scope.setMarkers = function () {
             }
         })($scope.marker, content));
 
-		$scope.markerMap.push($scope.marker);
-		console.log("Vetor de marcação: " + $scope.markerMap);
+		$scope.markersMap.push($scope.marker);
+		
 		}
 	}
 
-	$scope.clonaArray();	
-	}	
+		
+	
 
 
 
