@@ -193,7 +193,7 @@ $scope.setMarkers = function () {
             else if($scope.markers[j].carga==100){
                 icon = "img/lampada100.png";
             }
-						else if($scope.marker[j].carga > 0 && $scope.marker[j].carga < 30){
+						else if($scope.markers[j].carga > 0 && $scope.markers[j].carga < 30){
 							 icon = "img/lampada30.png";
 						}
 			$scope.marker = new google.maps.Marker({
