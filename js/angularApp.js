@@ -181,18 +181,21 @@ $scope.setMarkers = function () {
 			var lat = $scope.markers[j].geometry.coordinates[0];
  			var lng = $scope.markers[j].geometry.coordinates[1];
 			var latlngset = new google.maps.LatLng(lat,lng);
-            if($scope.markers[j].carga>30 && $scope.markers[j].carga<70){
+            if($scope.markers[j].carga>=30 && $scope.markers[j].carga<70){
               icon = "img/lampada50.png";  
             }
             else if($scope.markers[j].carga==0){
               icon = "img/lampada0.png"; 
             }
-            else if($scope.markers[j].carga>70 && $scope.markers[j].carga<100){
+            else if($scope.markers[j].carga>=70 && $scope.markers[j].carga<100){
                  icon = "img/lampada70.png"; 
             }
             else if($scope.markers[j].carga==100){
                 icon = "img/lampada100.png";
             }
+						else if($scope.marker[j].carga > 0 && $scope.marker[j].carga < 30){
+							 icon = "img/lampada30.png";
+						}
 			$scope.marker = new google.maps.Marker({
     		position: latlngset,
     		map: $scope.map,
