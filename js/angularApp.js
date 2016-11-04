@@ -11,7 +11,7 @@ $scope.sessionKey = null;
 $scope.connection;
 $scope.markersMap = [];
 $scope.marker = [];
-$scope.queryLamp = "select * from LedArduino";
+$scope.queryLamp = "select * from LedArduino ";
 
 $( function() {
     dwr.engine.setActiveReverseAjax( false );
@@ -63,7 +63,7 @@ $scope.addInArray = function(elemento){
 		}
 		else{
 			$scope.markers[i] = (elemento);
-            console.log("elemento"+elemento.led);
+            console.log("elemento troca posicao "+i+ "elemento "+elemento.led);
 		}
 }
 
@@ -164,6 +164,7 @@ $scope.geocodeAddress = function(address) {
 }
 
 $scope.deleteMarkers = function() {
+     //   $scope.clearMarkers();
         $scope.markersMap = [];
 }
 $scope.clearMarkers = function() {
