@@ -164,12 +164,13 @@ $scope.geocodeAddress = function(address) {
 }
 
 $scope.deleteMarkers = function() {
-     //   $scope.clearMarkers();
+      $scope.clearMarkers();
         $scope.markersMap = [];
 }
 $scope.clearMarkers = function() {
-        setMapOnAll(null);
-      }
+    for (var i = 0; i < $scope.markersMap.length; i++ ) {
+    $scope.markersMap[i].setMap(null);    
+      }}
 
 $scope.setMarkers = function () {
 
