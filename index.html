@@ -50,6 +50,10 @@
 				<h4>Lâmpada</h4>
 					<p>Localidade</p><input ng-model="address" type="textbox" value="Goiania">
                     <br><button id="btBusca" ng-click="geocodeAddress(address)" class="btn btn-primary">Buscar </button>
+                  <p>Intervalo de Atualização</p>
+                  <input ng-model="valueInterval" type="range" name="points" min="1" max="20">
+                  <p>{{valueInterval}}</p>
+             
 			</div>
            <div id="map" class="col-md-10" ></div>	
 		</div>

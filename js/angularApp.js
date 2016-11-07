@@ -1,5 +1,5 @@
 var app =  angular.module("SmartCityApp",[]);
-app.controller("mapacontroller", function($scope){
+app.controller("mapacontroller", function($scope,$interval){
 
 
 $scope.kp = "Led:Led1";
@@ -50,7 +50,7 @@ $scope.addInArray = function(elemento){
 	
 	var diferente = true;
 	var i = 0;
-    console.log($scope.markers.length);
+
 	while(i < $scope.markers.length && diferente == true) {
         
 		if(elemento.led == $scope.markers[i].led){
@@ -63,18 +63,20 @@ $scope.addInArray = function(elemento){
 		}
 		else{
 			$scope.markers[i] = (elemento);
-            console.log("elemento troca posicao "+i+ "elemento "+elemento.led);
+      
 		}
 }
 
 $scope.queryResultCall = function( mensajeSSAP ) {
 	if ( mensajeSSAP != null ) {
 		if (  mensajeSSAP.body != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
-			console.log( "Mensagem Enviada com Sucesso!" + mensajeSSAP.body );
+			
 			
 			var result = null;
             $scope.markers = [];
+            
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
+
 				result = JSON.stringify( mensajeSSAP.body.data[ i ], undefined, 2 );
 				if($scope.markers.length == 0){
 					$scope.markers.push(JSON.parse(result).LedArduino);
@@ -82,7 +84,7 @@ $scope.queryResultCall = function( mensajeSSAP ) {
                 }
 				else{
 					$scope.addInArray(JSON.parse(result).LedArduino);
-				    console.log("valor do parse"+JSON.parse(result).LedArduino.led);
+				  
 				}
 			}
             $scope.deleteMarkers();
@@ -223,14 +225,27 @@ $scope.setMarkers = function () {
 	}
 
 		
-	
-
-
-
 window.setTimeout($scope.conectar(),500);
-window.setTimeout($scope.action,1000);
-window.setInterval($scope.conectar(),5000);
-window.setInterval($scope.action,6000);
+ window.setTimeout($scope.action,1000);
+    
+ $scope.valueInterval = 10;
+    
+
+  var p = $interval($scope.action, $scope.valueInterval*1000);
+  var c = $interval($scope.conectar, $scope.valueInterval*1000);
+  $scope.$watch("valueInterval", function(){
+    $interval.cancel(p);
+    $interval.cancel(c);
+      console.log("valor"+$scope.valueInterval);
+     c = $interval($scope.conectar, $scope.valueInterval*1000);
+     p = $interval($scope.action, $scope.valueInterval*1000);
+  });
+  
+   
+   // window.setInterval($scope.conectar(),$scope.valueInterval*1000);
+  //  window.setInterval($scope.action,$scope.valueInterval*1000);
+  
+  
 
 
 });
