@@ -73,7 +73,7 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 			
 			
 			var result = null;
-            $scope.markers = [];
+            
             
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
 
@@ -167,42 +167,50 @@ $scope.geocodeAddress = function(address) {
 
 $scope.deleteMarkers = function() {
       $scope.clearMarkers();
-        $scope.markersMap = [];
+
+     $scope.markersMap = [];
+}
+$scope.clearArrayMarkers = function(){
+        $scope.markers = [];
 }
 $scope.clearMarkers = function() {
     for (var i = 0; i < $scope.markersMap.length; i++ ) {
     $scope.markersMap[i].setMap(null);    
       }}
 
+$scope.setColor = function(potencia){
+    if(potencia>=30 && potencia<70){
+              return icon = "img/lampada50.png";  
+            }
+            else if(potencia==0){
+             return icon = "img/lampada0.png"; 
+            }
+            else if(potencia>=70 && potencia<100){
+              return   icon = "img/lampada70.png"; 
+            }
+            else if(potencia==100){
+             return   icon = "img/lampada100.png";
+            }
+            else if(potencia > 0 && potencia < 30){
+              return  icon = "img/lampada30.png";
+            }
+}
+
 $scope.setMarkers = function () {
+var infowindow = new google.maps.InfoWindow();
 
- var infowindow = new google.maps.InfoWindow();
-
-		var icon;
+	
 		for(var j = 0; j < $scope.markers.length; j++){
 			var lat = $scope.markers[j].geometry.coordinates[0];
  			var lng = $scope.markers[j].geometry.coordinates[1];
 			var latlngset = new google.maps.LatLng(lat,lng);
-            if($scope.markers[j].carga>=30 && $scope.markers[j].carga<70){
-              icon = "img/lampada50.png";  
-            }
-            else if($scope.markers[j].carga==0){
-              icon = "img/lampada0.png"; 
-            }
-            else if($scope.markers[j].carga>=70 && $scope.markers[j].carga<100){
-                 icon = "img/lampada70.png"; 
-            }
-            else if($scope.markers[j].carga==100){
-                icon = "img/lampada100.png";
-            }
-						else if($scope.markers[j].carga > 0 && $scope.markers[j].carga < 30){
-							 icon = "img/lampada30.png";
-						}
+           	$scope.icon = $scope.setColor($scope.markers[j].carga);
+            console.log(icon);
 			$scope.marker = new google.maps.Marker({
     		position: latlngset,
     		map: $scope.map,
 			title: $scope.markers[j].led,
-			icon: icon
+            icon: $scope.icon 
   			});
             
   	var content = '<p>Nome do Sensor: ' + $scope.markers[j].led  + '</p>' +  
@@ -225,15 +233,15 @@ $scope.setMarkers = function () {
 	}
 
 		
-window.setTimeout($scope.conectar(),500);
- window.setTimeout($scope.action,1000);
+  window.setTimeout($scope.conectar(),500);
+  window.setTimeout($scope.action,1000);
     
- $scope.valueInterval = 10;
+  $scope.valueInterval = 10;
     
 
   var p = $interval($scope.action, $scope.valueInterval*1000);
   var c = $interval($scope.conectar, $scope.valueInterval*1000);
-  $scope.$watch("valueInterval", function(){
+$scope.$watch("valueInterval", function(){
     $interval.cancel(p);
     $interval.cancel(c);
       console.log("valor"+$scope.valueInterval);
@@ -241,11 +249,7 @@ window.setTimeout($scope.conectar(),500);
      p = $interval($scope.action, $scope.valueInterval*1000);
   });
   
-   
-   // window.setInterval($scope.conectar(),$scope.valueInterval*1000);
-  //  window.setInterval($scope.action,$scope.valueInterval*1000);
-  
-  
+
 
 
 });

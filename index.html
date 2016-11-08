@@ -6,7 +6,6 @@
 <link rel="stylesheet" href="css/bootstrap.css">
 <link rel="stylesheet" href="css/style.css">
 <link href="css/sticky-footer.css" rel="stylesheet">
-<script src="cordova.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvfqWlUONwTE0o4jFC0141HolHteWSdR0"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 <script type="text/javascript" src="js/angularApp.js"></script>
@@ -51,9 +50,9 @@
 				<h4>Lâmpada</h4>
 					<p>Localidade</p><input ng-model="address" type="textbox" value="Goiania">
                     <br><button id="btBusca" ng-click="geocodeAddress(address)" class="btn btn-primary">Buscar </button>
-                  <p>Intervalo de Atualização</p>
+                  <p> Atualização {{valueInterval}} segs</p>
                   <input ng-model="valueInterval" type="range" name="points" min="1" max="20">
-                  <p>{{valueInterval}}</p>
+          
              
 			</div>
            <div id="map" class="col-md-10" ></div>	
