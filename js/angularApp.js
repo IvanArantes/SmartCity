@@ -50,11 +50,13 @@ $scope.addInArray = function(elemento){
 	
 	var diferente = true;
 	var i = 0;
+    var posicaoIgual;
 
 	while(i < $scope.markers.length && diferente == true) {
         
 		if(elemento.led == $scope.markers[i].led){
  			diferente = false;
+            posicaoIgual = i;
 		}
 	i++;
     }
@@ -62,8 +64,7 @@ $scope.addInArray = function(elemento){
 			 $scope.markers.push(elemento);
 		}
 		else{
-			$scope.markers[i] = (elemento);
-      
+			$scope.markers[posicaoIgual] = elemento;
 		}
 }
 
@@ -73,7 +74,7 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 			
 			
 			var result = null;
-            
+            $scope.markers = [];
             
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
 
