@@ -64,7 +64,7 @@ footer p {
 
 @media screen and (max-device-width: 480px) { 
     #map {
-	height: 100px;
+	height: 300px;
 	width: 100%;
 	box-shadow: 0px 0px 10px blue;
 	margin-bottom: 3%;
