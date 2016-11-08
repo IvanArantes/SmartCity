@@ -50,7 +50,7 @@ $scope.addInArray = function(elemento){
 	
 	var diferente = true;
 	var i = 0;
-    var posicaoIgual;
+  var posicaoIgual;
 
 	while(i < $scope.markers.length && diferente == true) {
         
@@ -71,10 +71,8 @@ $scope.addInArray = function(elemento){
 $scope.queryResultCall = function( mensajeSSAP ) {
 	if ( mensajeSSAP != null ) {
 		if (  mensajeSSAP.body != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
-			
-			
 			var result = null;
-            $scope.markers = [];
+      $scope.markers = [];
             
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
 
@@ -85,7 +83,6 @@ $scope.queryResultCall = function( mensajeSSAP ) {
                 }
 				else{
 					$scope.addInArray(JSON.parse(result).LedArduino);
-				  
 				}
 			}
             $scope.deleteMarkers();
@@ -168,7 +165,6 @@ $scope.geocodeAddress = function(address) {
 
 $scope.deleteMarkers = function() {
       $scope.clearMarkers();
-
      $scope.markersMap = [];
 }
 $scope.clearArrayMarkers = function(){

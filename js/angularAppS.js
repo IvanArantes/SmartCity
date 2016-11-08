@@ -1,15 +1,16 @@
 var app =  angular.module("SmartCityApp",[]);
-app.controller("mapacontroller", function($scope){
+app.controller("mapacontroller", function($scope,$interval){
 
 
 $scope.kp = "Sensor:Sensor1";
 $scope.ontology = "SensoresArduino";
 $scope.token = "26e75ce8b75f4323bfd2657677911e55";
-$scope.resultados = Array();
 $scope.markers = [];
+$scope.markersBkp = [];
 $scope.sessionKey = null;
 $scope.connection;
-
+$scope.markersMap = [];
+$scope.marker = [];
 $scope.querySens = "select * from SensoresArduino";
 
 $( function() {
@@ -45,19 +46,46 @@ $scope.connect = function( ontology, kp, token, retrollamadaIfOk ) {
 		} );
 	}
 	
+$scope.addInArray = function(elemento){
+	
+	var diferente = true;
+	var i = 0;
+    var posicaoIgual;
+
+	while(i < $scope.markers.length && diferente == true) {
+        
+		if(elemento.sensor == $scope.markers[i].sensor){
+ 			diferente = false;
+            posicaoIgual = i;
+		}
+	i++;
+    }
+		if(diferente){
+			 $scope.markers.push(elemento);
+		}
+		else{
+			$scope.markers[posicaoIgual] = elemento;
+		}
+}	
 
 $scope.queryResultCall = function( mensajeSSAP ) {
 	if ( mensajeSSAP != null ) {
 		if (  mensajeSSAP.body != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
-			console.log( "Mensagem Enviada com Sucesso!" + mensajeSSAP.body );
-			
-			
+			var result = null;
+     		$scope.markers = [];
+            
 			for ( var i = 0; i < mensajeSSAP.body.data.length; i++ ) {
+
 				result = JSON.stringify( mensajeSSAP.body.data[ i ], undefined, 2 );
-                $scope.resultados.push(JSON.parse(result));
-                $scope.markers.push($scope.resultados[i].SensoresArduino);
-                //console.log($scope.resultados[i].SensoresArduino);
+				if($scope.markers.length == 0){
+					$scope.markers.push(JSON.parse(result).SensoresArduino);
+                
+                }
+				else{
+					$scope.addInArray(JSON.parse(result).SensoresArduino);
+				}
 			}
+            $scope.deleteMarkers();
             $scope.setMarkers();
 		}
 		else {
@@ -71,9 +99,7 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 
 // Funciones SIB sofia2
 $scope.sendCustomMessage = function( ontologia, query, retrollamada ) {
-	console.log("Entrou para enviar query");
 	if ( connection != null ) {
-		 //console.log($scope.getSessionKey());
 		 $scope.sessionKey = $scope.getSessionKey();
 		if ( $scope.sessionKey != null ) {
 			sofia2.queryWithQueryType( query.replace(/[\n\r]+/g, '').replace(/\s{2,10}/g, ''), ontologia, "SQLLIKE", null, retrollamada );
@@ -101,8 +127,13 @@ $scope.desconectar = function() {
 }
 
 $scope.action = function() {
-		$scope.sendCustomMessage($scope.ontology, $scope.querySens, $scope.queryResultCall);
-	console.log("executado action");	
+		$scope.sendCustomMessage($scope.ontology, $scope.querySens, $scope.queryResultCall);		
+}
+
+$scope.clonaArray = function() {
+	for(var i = 0; i < $scope.markers.length; i++){
+		$scope.markersBkp[i] = $scope.markers[i];
+	}
 }
 
 $scope.map;   
@@ -112,10 +143,9 @@ $scope.mapOptions = {
 	mapTypeId: google.maps.MapTypeId.ROADMAP,
     center: {lat: -16.68189, lng: -49.255539}
   };
- $scope.map = new google.maps.Map(document.getElementById('map'), $scope.mapOptions);
-
+$scope.map = new google.maps.Map(document.getElementById('map'), $scope.mapOptions);
 $scope.geocoder = new google.maps.Geocoder();
-  
+
 $scope.geocodeAddress = function(address) {
   $scope.address = address;
   $scope.geocoder.geocode({'address': address}, function(results, status) {
@@ -123,6 +153,7 @@ $scope.geocodeAddress = function(address) {
       $scope.map.setCenter(results[0].geometry.location);
       var marker = new google.maps.Marker({
         map: $scope.map,
+		animation: google.maps.Animation.DROP,
         position: $scope.results[0].geometry.location
       });
     } else {
@@ -131,6 +162,17 @@ $scope.geocodeAddress = function(address) {
   });
 }
 
+$scope.deleteMarkers = function() {
+      $scope.clearMarkers();
+     $scope.markersMap = [];
+}
+$scope.clearArrayMarkers = function(){
+        $scope.markers = [];
+}
+$scope.clearMarkers = function() {
+    for (var i = 0; i < $scope.markersMap.length; i++ ) {
+    $scope.markersMap[i].setMap(null);    
+      }}
 
 $scope.setMarkers = function () {
  var icon = "img/icosensor.png";
@@ -158,19 +200,26 @@ $scope.setMarkers = function () {
                 infowindow.open($scope.map, marker);
             }
         })($scope.marker, content));
- 
+		$scope.markersMap.push($scope.marker);
  	} 
-	$scope.resultados = [];
-	$scope.markers = [];
-	
 }
 
+	
+  window.setTimeout($scope.conectar(),500);
+  window.setTimeout($scope.action,1000);
+    
+  $scope.valueInterval = 10;
+    
 
-
-window.setTimeout($scope.conectar(),500);
-window.setTimeout($scope.action,1000);
-window.setInterval($scope.conectar(),1500);
-window.setInterval($scope.action,2000);
-
+  var p = $interval($scope.action, $scope.valueInterval*1000);
+  var c = $interval($scope.conectar, $scope.valueInterval*1000);
+$scope.$watch("valueInterval", function(){
+    $interval.cancel(p);
+    $interval.cancel(c);
+      console.log("valor"+$scope.valueInterval);
+     c = $interval($scope.conectar, $scope.valueInterval*1000);
+     p = $interval($scope.action, $scope.valueInterval*1000);
+  });
+  
 
 });
