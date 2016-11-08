@@ -35,13 +35,6 @@ html, body {
 
 }
 
-.footer{
-	height: 40px;
-	background-color: black;
-	color: white;
-	margin: 0;
-}
-
-.footer p {
-	margin-top:1%;
+footer p {
+	margin-left: 5%;
 }
