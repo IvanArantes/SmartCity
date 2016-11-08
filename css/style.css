@@ -12,7 +12,6 @@
     margin-left: 0;
 	margin-top: 3%;
     padding-left: 0;
-	
 }
 
 .infoWindowContent {
@@ -37,4 +36,40 @@ html, body {
 
 footer p {
 	margin-left: 5%;
+}
+
+@media screen and (min-width: 1000px) {
+    #map {
+	height: 500px;
+	width: 100%;
+	box-shadow: 0px 0px 10px blue;
+	margin-bottom: 3%;
+    margin-left: 0;
+	margin-top: 3%;
+    padding-left: 0;
+	}
+}
+
+@media screen and (min-device-width: 481px) and (max-device-width: 768px) { 
+    #map {
+	height: 100px;
+	width: 100%;
+	box-shadow: 0px 0px 10px blue;
+	margin-bottom: 3%;
+    margin-left: 0;
+	margin-top: 3%;
+    padding-left: 0;
+	}
+}
+
+@media screen and (max-device-width: 480px) { 
+    #map {
+	height: 100px;
+	width: 100%;
+	box-shadow: 0px 0px 10px blue;
+	margin-bottom: 3%;
+    margin-left: 0;
+	margin-top: 3%;
+    padding-left: 0;
+	}
 }
