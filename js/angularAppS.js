@@ -144,7 +144,6 @@ $scope.setMarkers = function () {
 	$scope.marker = new google.maps.Marker({
     position: latlngset,
     map: $scope.map,
-	animation: google.maps.Animation.DROP,
 	title: $scope.markers[i].sensor,
 	icon: icon
   });

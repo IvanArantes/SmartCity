@@ -37,18 +37,3 @@ html, body {
 	margin-top: 1%;
     margin-bottom: 5%;
 }
-
-.footer {
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 40px;
-	margin-top:2%;
-  background-color: #000000;
-}
-
-.footer .text-muted {
-  margin: 10px 0 10px 0;
-  color: white;
-  font-size: 10px;
-}
