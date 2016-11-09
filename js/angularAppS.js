@@ -18,11 +18,11 @@ $( function() {
     dwr.engine.setTimeout(0);
 		dwr.engine.setErrorHandler( function( arg ){ alert( arg ) } );
 		
-		connection = new Connection();
+		$scope.connection = new $scope.Connection();
 });
 
 //class de conexão do sofia2
-var Connection = function() {
+$scope.Connection = function() {
 $scope.sessionKey;
 	
 	$scope.getSessionKey = function() {
@@ -31,6 +31,7 @@ $scope.sessionKey;
 }
 $scope.connect = function( ontology, kp, token, retrollamadaIfOk ) {
 		sofia2.joinToken( token, kp, function( mensajeSSAP ) {		
+			if ( $scope.sessionKey == null ) {
 			if ( mensajeSSAP != null && mensajeSSAP.body.data != null && mensajeSSAP.body.ok == true ) {
 				$scope.sessionKey = mensajeSSAP.sessionKey;
 				
@@ -43,7 +44,7 @@ $scope.connect = function( ontology, kp, token, retrollamadaIfOk ) {
 			else {
 					alert( "Error\n" +  mensajeSSAP.body.error );
 			}
-		} );
+		}} );
 	}
 	
 $scope.addInArray = function(elemento){
@@ -99,7 +100,7 @@ $scope.queryResultCall = function( mensajeSSAP ) {
 
 // Funciones SIB sofia2
 $scope.sendCustomMessage = function( ontologia, query, retrollamada ) {
-	if ( connection != null ) {
+	if ( $scope.connection != null ) {
 		 $scope.sessionKey = $scope.getSessionKey();
 		if ( $scope.sessionKey != null ) {
 			sofia2.queryWithQueryType( query.replace(/[\n\r]+/g, '').replace(/\s{2,10}/g, ''), ontologia, "SQLLIKE", null, retrollamada );
@@ -119,12 +120,6 @@ $scope.conectar = function() {
 			}	
 		);
 	}
-
-$scope.desconectar = function() {
-	if ( connection != null ) {
-		connection.leave(function( arg ) {$scope.resultbox = "desconectado";    });
-	}
-}
 
 $scope.action = function() {
 		$scope.sendCustomMessage($scope.ontology, $scope.querySens, $scope.queryResultCall);		
@@ -192,7 +187,7 @@ $scope.setMarkers = function () {
   	var content = '<p>Nome do Sensor: ' + $scope.markers[i].sensor  + '</p>' +  
 	  '<p>Latitude: '+ lat + '</p>' +
 	  '<p>Longitude: '+ lng + '</p>' +
-	  '<p>Data da modificação: ' + $scope.markers[i].data_disparo.$date.substring(0,10) + '</p>';
+	  '<p>Data da modificação: ' + $scope.markers[i].data_disparo.$date.substring(0,10) +  ' ' + $scope.markers[i].data_disparo.$date.substring(11,19) + '</p>';
 
 	google.maps.event.addListener($scope.marker, 'click', (function(marker, content) {
             return function() {
@@ -208,7 +203,7 @@ $scope.setMarkers = function () {
   window.setTimeout($scope.conectar(),500);
   window.setTimeout($scope.action,1000);
     
-  $scope.valueInterval = 10;
+  $scope.valueInterval = 5;
     
 
   var p = $interval($scope.action, $scope.valueInterval*1000);
