@@ -136,7 +136,7 @@ $scope.marker;
 $scope.mapOptions = {
     zoom: 15,
 	mapTypeId: google.maps.MapTypeId.ROADMAP,
-    center: {lat: -16.68189, lng: -49.255539}
+    center: {lat: -16.673624 , lng: -49.269078}
   };
 $scope.map = new google.maps.Map(document.getElementById('map'), $scope.mapOptions);
 $scope.geocoder = new google.maps.Geocoder();
